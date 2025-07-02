@@ -32,7 +32,7 @@ builder.Services.AddAutoMapper(cfg =>
 });
 
 // 注册泛型仓储
-builder.Services.AddScoped(typeof(IProductRepository<>),typeof(Repositories<>));
+builder.Services.AddScoped(typeof(IProductRepository<>), typeof(Repositories<>));
 // 注册工作单元
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //注册服务
@@ -59,14 +59,23 @@ builder.Services.AddScoped<Func<string, IExcelService>>(serviceProvider => key =
     };
 });
 
-//跨域
+// 配置CORS策略 - 开发环境宽松设置
 builder.Services.AddCors(option =>
 {
-    option.AddPolicy("AllowAll", builder =>
+    // 允许来自以下源的请求
+    option.AddPolicy("DevCorsPolicy", policy =>
     {
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+        //允许来自以下源的请求
+
+        policy.WithOrigins(
+            "http://localhost:3000",    // 典型的React开发服务器
+            "http://localhost:4200",    // 典型的Angular开发服务器
+            "http://localhost:8080",    // 典型的Vue开发服务器
+            "https://localhost:7221"    // 另一个可能的ASP.NET Core开发端口
+            )
+            .AllowAnyMethod()               // 允许所有HTTP方法
+            .AllowAnyHeader()               // 允许所有头
+            .AllowCredentials();            // 允许凭据(如cookies)
     });
 });
 
@@ -79,6 +88,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseDeveloperExceptionPage();
+
+    // 在开发环境下使用宽松的CORS策略
+    app.UseCors("DevCorsPolicy");
 }
 
 app.UseHttpsRedirection();

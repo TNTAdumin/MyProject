@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Azure.Messaging;
+using LinqKit;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyProject.Application.DTOs;
@@ -6,24 +9,23 @@ using MyProject.Application.IService;
 using MyProject.Domain.Common;
 using MyProject.Domain.Interfaces;
 using MyProject.Domain.Models;
-using NPOI.Util;
-using static System.Net.Mime.MediaTypeNames;
-using System.Net.Sockets;
-using Npoi.Mapper;
-using System.Runtime.CompilerServices;
-using Azure.Messaging;
-using System.Runtime.Serialization;
 using MyProject.Infrastructure.Utilities;
-using System.Diagnostics;
-using NPOI.SS.UserModel;
-using System.Linq.Expressions;
-using LinqKit;
+using Npoi.Mapper;
 using NPOI.SS.Formula.Functions;
+using NPOI.SS.UserModel;
+using NPOI.Util;
+using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace MyProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("DevCorsPolicy")] // 应用CORS策略
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
